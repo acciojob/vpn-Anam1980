@@ -59,13 +59,13 @@ public class AdminServiceImpl implements AdminService {
     public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception {
         Optional<ServiceProvider> serviceProviderOptional = serviceProviderRepository1.findById(serviceProviderId);
 
-        if(!validCountryName(countryName.toUpperCase())){
-            throw  new Exception();
-        }
         ServiceProvider serviceProvider=null;
         if (serviceProviderOptional.isPresent()) {
             serviceProvider = serviceProviderOptional.get();
             CountryName validCountry = CountryName.valueOf(countryName.toUpperCase());
+            if(!validCountryName(countryName.toUpperCase())){
+                throw  new Exception("Country not foundgi");
+            }
             Country country = new Country();
 
             country.setCode(validCountry.toCode());
