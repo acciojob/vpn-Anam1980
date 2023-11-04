@@ -59,6 +59,9 @@ public class AdminServiceImpl implements AdminService {
     public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception {
         Optional<ServiceProvider> serviceProviderOptional = serviceProviderRepository1.findById(serviceProviderId);
 
+        if(!validCountryName(countryName)){
+            throw  new Exception("Country not found");
+        }
         ServiceProvider serviceProvider=null;
         if (serviceProviderOptional.isPresent()) {
             serviceProvider = serviceProviderOptional.get();
@@ -71,9 +74,7 @@ public class AdminServiceImpl implements AdminService {
                     country = c;
                 }
             }
-            if (country == null) {
-                throw new Exception("Country not found");
-            }
+
             country.setCode(validCountry.toCode());
 
             // Add country to service provider
@@ -83,4 +84,12 @@ public class AdminServiceImpl implements AdminService {
         }
         return serviceProvider;
     }
+
+    public boolean validCountryName(String countryName){
+        if(countryName.equals("IND")||countryName.equals("USA") || countryName.equals("AUS") || countryName.equals("CHI") || countryName.equals("JPN")){
+            return true;
+        }
+        return  false;
+    }
+
 }
