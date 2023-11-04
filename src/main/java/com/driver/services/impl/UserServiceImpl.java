@@ -39,7 +39,9 @@ public class UserServiceImpl implements UserService {
                 country = c;
             }
         }
-
+        if(country==null){
+            throw new Exception();
+        }
         user.setOriginalCountry(country);
 
 
