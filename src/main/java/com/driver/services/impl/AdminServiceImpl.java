@@ -1,5 +1,6 @@
 package com.driver.services.impl;
 
+import com.driver.exception.CountryNotFoundException;
 import com.driver.model.Admin;
 import com.driver.model.Country;
 import com.driver.model.CountryName;
@@ -64,7 +65,7 @@ public class AdminServiceImpl implements AdminService {
             serviceProvider = serviceProviderOptional.get();
             CountryName validCountry = CountryName.valueOf(countryName.toUpperCase());
             if(!validCountryName(countryName.toUpperCase())){
-                throw  new Exception();
+                throw  new CountryNotFoundException();
             }
             Country country = new Country();
 
