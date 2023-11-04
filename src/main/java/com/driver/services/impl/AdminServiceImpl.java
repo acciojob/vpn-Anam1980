@@ -59,23 +59,19 @@ public class AdminServiceImpl implements AdminService {
     public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception {
         Optional<ServiceProvider> serviceProviderOptional = serviceProviderRepository1.findById(serviceProviderId);
 
-        if(!validCountryName(countryName)){
-            throw  new Exception();
+        if(!validCountryName(countryName.toUpperCase())){
+            throw  new Exception("Country not found");
         }
         ServiceProvider serviceProvider=null;
         if (serviceProviderOptional.isPresent()) {
             serviceProvider = serviceProviderOptional.get();
             CountryName validCountry = CountryName.valueOf(countryName.toUpperCase());
-            Country country = null;
-
-            List<Country> countryList = countryRepository1.findAll();
-            for (Country c : countryList) {
-                if (c.getCountryName().equals(validCountry)) {
-                    country = c;
-                }
-            }
+            Country country = new Country();
 
             country.setCode(validCountry.toCode());
+            country.setUser(null);
+            country.setServiceProvider(null);
+
 
             // Add country to service provider
             serviceProvider.getCountryList().add(country);
