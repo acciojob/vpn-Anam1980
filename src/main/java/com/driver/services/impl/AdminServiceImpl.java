@@ -78,7 +78,7 @@ public class AdminServiceImpl implements AdminService {
               }
           }
           catch (Exception e){
-              throw  new Exception("Country not found");
+              throw  new Exception();
           }
 
         CountryName  validCountry = CountryName.valueOf(countryName.toUpperCase());

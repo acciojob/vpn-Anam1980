@@ -47,9 +47,6 @@ public class ConnectionServiceImpl implements ConnectionService {
                }
            }
 
-           if (serviceProvider == null) {
-               throw new Exception("Unable to connect");
-           }
 
            // Establish the connection
            String maskedIp = countryName.toUpperCase() + "." + serviceProvider.getId() + "." + userId;
@@ -80,7 +77,7 @@ public class ConnectionServiceImpl implements ConnectionService {
             user = userOptional.get();
         }
         List<Connection>userConnectionList =user.getConnectionList();
-        if(user.getConnected()){
+        if(!user.getConnected()){
             throw  new Exception("Already disconnected");
         }
 
