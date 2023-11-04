@@ -64,7 +64,7 @@ public class AdminServiceImpl implements AdminService {
             serviceProvider = serviceProviderOptional.get();
             CountryName validCountry = CountryName.valueOf(countryName.toUpperCase());
             if(!validCountryName(countryName.toUpperCase())){
-                throw  new Exception("Country not foundgi");
+                throw  new Exception();
             }
             Country country = new Country();
 
