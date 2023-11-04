@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.String.valueOf;
+
 @Service
 public class ConnectionServiceImpl implements ConnectionService {
     @Autowired
@@ -21,53 +23,55 @@ public class ConnectionServiceImpl implements ConnectionService {
     ConnectionRepository connectionRepository2;
 
     @Override
-    public User connect(int userId, String countryName) throws Exception{
+    public User connect(int userId, String countryName) throws Exception {
+        Optional<User> userOptional = userRepository2.findById(userId);
 
-       Optional<User> userOptional = userRepository2.findById(userId);
-       User user = null;
-       if(userOptional.isPresent()){
-           user = userOptional.get();
-       }
-      List<Connection>userConnectionList =user.getConnectionList();
-       if(user.getConnected()==true){
-           throw  new Exception("Already connected");
-       }
-       else if (countryName.equals(user.getOriginalCountry().getCountryName())) {
-           //This means that the user wants to connect to its original country, for which we do not require a connection.
-           return user;
-       }
-       else{
-           ServiceProvider serviceProvider = null;
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
 
-           // Find the service provider for the given country using user's original country ID
-           for (Connection connection : user.getOriginalCountry().getUser().getConnectionList()) {
-               if (connection.getUser().getOriginalCountry().getCountryName().equals(countryName)) {
-                   serviceProvider = connection.getServiceProvider();
-                   break;
-               }
-           }
+            // Check if the user is already connected
+            if (user.getConnected()) {
+                throw new Exception("Already connected");
+            }
 
+            // Check if the user wants to connect to its original country
+            if (countryName.equalsIgnoreCase(valueOf(user.getOriginalCountry().getCountryName()))) {
+                // User wants to connect to its original country, no need for a connection
+                return user;
+            }
 
-           // Establish the connection
-           String maskedIp = countryName.toUpperCase() + "." + serviceProvider.getId() + "." + userId;
-           user.setMaskedIp(maskedIp);
+            ServiceProvider serviceProvider = serviceProviderRepository2.findServiceProviderForCountry(countryName, user);
+
+            if (serviceProvider == null) {
+                throw new Exception("Unable to connect");
+            }
+
+            // Establish the connection
+            String maskedIp = countryName.toUpperCase() + "." + serviceProvider.getId() + "." + userId;
+
+            Connection connection = new Connection();
+            connection.setServiceProvider(serviceProvider);
+            connection.setUser(user);
 
 
-           Connection connection = new Connection();
-           connection.setServiceProvider(user.getServiceProviderList().get(0));
-           connection.setUser(user);
+            // Update user attributes
+            user.setMaskedIp(maskedIp);
+            user.getConnectionList().add(connection);
+            user.setConnected(true);
 
-           user.getConnectionList().add(connection);
-
-           // Set user as connected
-           user.setConnected(true);
-
-           // Save the updated user
+            // Save the updated user and connection
             userRepository2.save(user);
             connectionRepository2.save(connection);
-       }
-       return user;
+
+            return user;
+        } else {
+            throw new Exception("User not found");
+        }
     }
+
+
+
+
     @Override
     public User disconnect(int userId) throws Exception {
 

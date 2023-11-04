@@ -56,42 +56,37 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception{
-       Optional<ServiceProvider> serviceProviderOptional = serviceProviderRepository1.findById(serviceProviderId);
-       ServiceProvider serviceProvider = null;
-
-           if (serviceProviderOptional.isPresent()) {
-               serviceProvider = serviceProviderOptional.get();
-           }
-          else{
-              throw  new Exception();
-           }
-        Country country = null;
+    public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception {
+        Optional<ServiceProvider> serviceProviderOptional = serviceProviderRepository1.findById(serviceProviderId);
 
 
-          try{
-              List<Country> countrylist = countryRepository1.findAll();
-              for(Country c : countrylist){
-                  if(c.getCountryName().equals(countryName)){
-                      country = c;
-                  }
-              }
-          }
-          catch (Exception e){
-              throw  new Exception();
-          }
+        if (serviceProviderOptional.isPresent()) {
+            ServiceProvider serviceProvider = serviceProviderOptional.get();
 
-        CountryName  validCountry = CountryName.valueOf(countryName.toUpperCase());
-          country.setCountryName(validCountry);
-          country.setCode(validCountry.toCode());
+            try {
+                CountryName validCountry = CountryName.valueOf(countryName.toUpperCase());
+                Country country=null;
+                try {
+                    List<Country>countryList = countryRepository1.findAll();
+                    for(Country c : countryList){
+                        if(c.getCountryName().equals(validCountry)){
+                            country = c;
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new Exception();
+                }
+                country.setCode(validCountry.toCode());
 
-          //add country to serviceprovider
-        serviceProvider.getCountryList().add(country);
-        serviceProviderRepository1.save(serviceProvider);
-        countryRepository1.save(country);
+                // Add country to service provider
+                serviceProvider.getCountryList().add(country);
+                serviceProviderRepository1.save(serviceProvider);
 
-        return serviceProvider;
-
-
+                return serviceProvider;
+            } catch (IllegalArgumentException e) {
+                throw new Exception("Country not found");
+            }
+        }
+        return null;
     }
 }

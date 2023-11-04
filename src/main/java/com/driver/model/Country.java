@@ -29,10 +29,6 @@ public class Country {
     public Country() {
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public Country(int id, CountryName countryName, String code) {
         this.id = id;
         this.countryName = countryName;
@@ -64,7 +60,7 @@ public class Country {
     }
 
     @OneToOne(mappedBy = "originalCountry", cascade = CascadeType.ALL)
-    User user = null;
+    User user=null;
 
     @ManyToOne
     @JoinColumn
