@@ -59,32 +59,28 @@ public class AdminServiceImpl implements AdminService {
     public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception {
         Optional<ServiceProvider> serviceProviderOptional = serviceProviderRepository1.findById(serviceProviderId);
 
-
+        ServiceProvider serviceProvider=null;
         if (serviceProviderOptional.isPresent()) {
-            ServiceProvider serviceProvider = serviceProviderOptional.get();
+            serviceProvider = serviceProviderOptional.get();
+            CountryName validCountry = CountryName.valueOf(countryName.toUpperCase());
+            Country country = null;
 
-
-                CountryName validCountry = CountryName.valueOf(countryName.toUpperCase());
-                Country country=null;
-                try {
-                    List<Country>countryList = countryRepository1.findAll();
-                    for(Country c : countryList){
-                        if(c.getCountryName().equals(validCountry)){
-                            country = c;
-                        }
-                    }
-                } catch (Exception e) {
-                    throw new Exception("Country not found");
+            List<Country> countryList = countryRepository1.findAll();
+            for (Country c : countryList) {
+                if (c.getCountryName().equals(validCountry)) {
+                    country = c;
                 }
-                country.setCode(validCountry.toCode());
-
-                // Add country to service provider
-                serviceProvider.getCountryList().add(country);
-                serviceProviderRepository1.save(serviceProvider);
-
-                return serviceProvider;
             }
+            if (country == null) {
+                throw new Exception("Country not found");
+            }
+            country.setCode(validCountry.toCode());
 
-        return null;
+            // Add country to service provider
+            serviceProvider.getCountryList().add(country);
+            serviceProviderRepository1.save(serviceProvider);
+
+        }
+        return serviceProvider;
     }
 }
