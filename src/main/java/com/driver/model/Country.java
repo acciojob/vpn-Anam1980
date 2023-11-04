@@ -63,7 +63,7 @@ public class Country {
         this.code = code;
     }
 
-    @OneToOne(mappedBy = "country", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "originalCountry", cascade = CascadeType.ALL)
     User user = null;
 
     @ManyToOne
