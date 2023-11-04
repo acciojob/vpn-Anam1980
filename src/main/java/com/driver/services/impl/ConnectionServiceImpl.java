@@ -32,7 +32,7 @@ public class ConnectionServiceImpl implements ConnectionService {
        if(user.getConnected()==true){
            throw  new Exception("Already connected");
        }
-       else if (countryName.equals(user.getCountry().getCountryName())) {
+       else if (countryName.equals(user.getOriginalCountry().getCountryName())) {
            //This means that the user wants to connect to its original country, for which we do not require a connection.
            return user;
        }
@@ -40,8 +40,8 @@ public class ConnectionServiceImpl implements ConnectionService {
            ServiceProvider serviceProvider = null;
 
            // Find the service provider for the given country using user's original country ID
-           for (Connection connection : user.getCountry().getUser().getConnectionList()) {
-               if (connection.getUser().getCountry().getCountryName().equals(countryName)) {
+           for (Connection connection : user.getOriginalCountry().getUser().getConnectionList()) {
+               if (connection.getUser().getOriginalCountry().getCountryName().equals(countryName)) {
                    serviceProvider = connection.getServiceProvider();
                    break;
                }
@@ -120,17 +120,17 @@ public class ConnectionServiceImpl implements ConnectionService {
              List<Connection> connectionList = connectionRepository2.findAll();
              for(Connection c : connectionList){
                  if(c.getUser().equals(receiver)){
-                     currCountryOfReceiver = c.getUser().getCountry();
+                     currCountryOfReceiver = c.getUser().getOriginalCountry();
                  }
              }
              if(currCountryOfReceiver==null){
-                 currCountryOfReceiver = receiver.getCountry();
+                 currCountryOfReceiver = receiver.getOriginalCountry();
              }
 
             if (!sender.getConnected()) {
                 ServiceProvider suitableProvider = null;
                 for (Connection connection : sender.getConnectionList()) {
-                    if (connection.getUser().getCountry().getCountryName().equals(currCountryOfReceiver.getCountryName())) {
+                    if (connection.getUser().getOriginalCountry().getCountryName().equals(currCountryOfReceiver.getCountryName())) {
                         suitableProvider = connection.getServiceProvider();
                         break;
                     }
@@ -152,7 +152,7 @@ public class ConnectionServiceImpl implements ConnectionService {
             connectionRepository2.save(connection);
         } else {
                 // Check if sender's original country matches receiver's current country
-                if (!sender.getCountry().getCountryName().equals(currCountryOfReceiver.getCountryName())) {
+                if (!sender.getOriginalCountry().getCountryName().equals(currCountryOfReceiver.getCountryName())) {
                     throw new Exception("Cannot establish communication");
                 }
             }

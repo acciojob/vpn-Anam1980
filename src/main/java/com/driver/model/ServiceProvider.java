@@ -10,6 +10,15 @@ public class ServiceProvider {
     private Integer id;
     private String name;
 
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
     public int getId() {
         return id;
     }
@@ -53,6 +62,10 @@ public class ServiceProvider {
     @ManyToOne
     @JoinColumn
     Admin admin;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     @ManyToMany
     @JoinColumn

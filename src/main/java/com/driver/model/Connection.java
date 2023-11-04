@@ -42,6 +42,10 @@ public class Connection {
     @JoinColumn
     User user;
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @ManyToOne
     @JoinColumn
     ServiceProvider serviceProvider;

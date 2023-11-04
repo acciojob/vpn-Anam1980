@@ -29,6 +29,10 @@ public class Country {
     public Country() {
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Country(int id, CountryName countryName, String code) {
         this.id = id;
         this.countryName = countryName;

@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        user.setCountry(country);
+        user.setOriginalCountry(country);
 
 
         int userId = user.getId();
