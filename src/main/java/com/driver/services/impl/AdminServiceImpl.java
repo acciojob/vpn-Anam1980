@@ -60,7 +60,7 @@ public class AdminServiceImpl implements AdminService {
         Optional<ServiceProvider> serviceProviderOptional = serviceProviderRepository1.findById(serviceProviderId);
 
         if(!validCountryName(countryName.toUpperCase())){
-            throw  new Exception("Country not found");
+            throw  new Exception();
         }
         ServiceProvider serviceProvider=null;
         if (serviceProviderOptional.isPresent()) {
