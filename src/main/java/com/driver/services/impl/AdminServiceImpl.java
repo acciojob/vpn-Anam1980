@@ -63,7 +63,7 @@ public class AdminServiceImpl implements AdminService {
         if (serviceProviderOptional.isPresent()) {
             ServiceProvider serviceProvider = serviceProviderOptional.get();
 
-            try {
+
                 CountryName validCountry = CountryName.valueOf(countryName.toUpperCase());
                 Country country=null;
                 try {
@@ -74,7 +74,7 @@ public class AdminServiceImpl implements AdminService {
                         }
                     }
                 } catch (Exception e) {
-                    throw new Exception();
+                    throw new Exception("Country not found");
                 }
                 country.setCode(validCountry.toCode());
 
@@ -83,10 +83,8 @@ public class AdminServiceImpl implements AdminService {
                 serviceProviderRepository1.save(serviceProvider);
 
                 return serviceProvider;
-            } catch (IllegalArgumentException e) {
-                throw new Exception("Country not found");
             }
-        }
+
         return null;
     }
 }
